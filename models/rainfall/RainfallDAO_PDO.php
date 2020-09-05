@@ -5,18 +5,19 @@ class RainfallDAO_PDO implements RainfallDAO
 {
 
     private $_strInsert = "INSERT INTO `Rainfall`(
-        `town_sn`, `cityID`, `locationName`, `rain`, `hour_24`)
-        VALUES (:town_sn,:cityID,:locationName,:rain,:hour_24);";
+        `stationId`, `cityName`, `locationName`, `rain`, `hour_24`)
+        VALUES (:stationId,:cityName,:locationName,:rain,:hour_24);";
     private $_strUpdate = "UPDATE `Rainfall`
         SET `locationName`=:locationName,`rain`=:rain,`hour_24`=:hour_24
-        WHERE `town_sn`=:town_sn AND `cityID`=:cityID;";
-    private $_strGetOneByID = "SELECT * FROM `Rainfall` WHERE `town_sn`=:town_sn;";
-    private $_strCityGetObservatory = "SELECT `town_sn`, `cityID`, `locationName` FROM `Rainfall` WHERE `cityID`=:cityID;";
+        WHERE `stationId`=:stationId AND `cityName`=:cityName;";
+    private $_strGetOneByID = "SELECT * FROM `Rainfall` WHERE `stationId`=:stationId;";
+    private $_strCityGetObservatory = "SELECT `stationId`, `cityName`, `locationName` FROM `Rainfall` WHERE `cityName`=:cityName;";
+    private $_strCheckExist = "SELECT COUNT(*) FROM `rainfall` WHERE `stationId`=:stationId";
 
     //新增
     public function insertRainfall(
-        $town_sn,
-        $cityID,
+        $stationId,
+        $cityName,
         $locationName,
         $rain = null,
         $hour_24 = null
@@ -25,8 +26,8 @@ class RainfallDAO_PDO implements RainfallDAO
             $dbh = Config::getDBConnect();
             $dbh->beginTransaction();
             $sth = $dbh->prepare($this->_strInsert);
-            $sth->bindParam("town_sn", $town_sn);
-            $sth->bindParam("cityID", $cityID);
+            $sth->bindParam("stationId", $stationId);
+            $sth->bindParam("cityName", $cityName);
             $sth->bindParam("locationName", $locationName);
             $sth->bindParam("rain", $rain);
             $sth->bindParam("hour_24", $hour_24);
@@ -46,8 +47,8 @@ class RainfallDAO_PDO implements RainfallDAO
     public function insertRainfallByObj($Rainfall)
     {
         return $this->insertRainfall(
-            $Rainfall->getTown_sn(),
-            $Rainfall->getCityID(),
+            $Rainfall->getstationId(),
+            $Rainfall->getCityName(),
             $Rainfall->getLocationName(),
             $Rainfall->getRain(),
             $Rainfall->getHour_24()
@@ -64,8 +65,8 @@ class RainfallDAO_PDO implements RainfallDAO
             $sth->bindParam("locationName", $Rainfall->getLocationName());
             $sth->bindParam("rain", $Rainfall->getRain());
             $sth->bindParam("hour_24", $Rainfall->getHour_24());
-            $sth->bindParam("town_sn", $Rainfall->getTown_sn());
-            $sth->bindParam("cityID", $Rainfall->getCityID());
+            $sth->bindParam("stationId", $Rainfall->getstationId());
+            $sth->bindParam("cityName", $Rainfall->getCityName());
             $sth->execute();
             $dbh->commit();
             $sth = null;
@@ -77,12 +78,12 @@ class RainfallDAO_PDO implements RainfallDAO
         return true;
     }
 
-    public function getOneByID($town_sn)
+    public function getOneByID($stationId)
     {
         try {
             $dbh = Config::getDBConnect();
             $sth = $dbh->prepare($this->_strGetOneByID);
-            $sth->bindParam("town_sn", $town_sn);
+            $sth->bindParam("stationId", $stationId);
             $sth->execute();
             $requests = $sth->fetch(PDO::FETCH_ASSOC);
             $sth = null;
@@ -93,12 +94,12 @@ class RainfallDAO_PDO implements RainfallDAO
         return Rainfall::dbDataToModel($requests);
     }
 
-    public function getCityObservatory($cityID)
+    public function getCityObservatory($cityName)
     {
         try {
             $dbh = Config::getDBConnect();
             $sth = $dbh->prepare($this->_strCityGetObservatory);
-            $sth->bindParam("cityID", $cityID);
+            $sth->bindParam("cityName", $cityName);
             $sth->execute();
             $requests = $sth->fetchAll(PDO::FETCH_ASSOC);
             $sth = null;
@@ -107,5 +108,21 @@ class RainfallDAO_PDO implements RainfallDAO
         }
         $dbh = null;
         return Rainfall::dbDatasToModelsArray($requests);
+    }
+
+    public function checkExist($id)
+    {
+        try {
+            $dbh = Config::getDBConnect();
+            $sth = $dbh->prepare($this->_strCheckExist);
+            $sth->bindParam("stationId", $stationId);
+            $sth->execute();
+            $requests = $sth->fetch(PDO::FETCH_NUM);
+            $sth = null;
+        } catch (Exception $err) {
+            $dbh = null;
+        }
+        $dbh = null;
+        return $requests['0'];
     }
 }

@@ -17,4 +17,9 @@ class Controller
     {
         return $model::jsonArrayStringToModelsArray($jsonStr);
     }
+
+    public function getApiObjToModel($model, $apiObj)
+    {
+        return $model::apiObjToModel($apiObj);
+    }
 }

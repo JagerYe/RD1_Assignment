@@ -16,7 +16,7 @@ class WeatherDAO_PDO implements WeatherDAO
             `AT`=:AT,`PoP`=:PoP,`RH`=:RH,`CI`=:CI,`WS`=:WS,
             `WD`=:WD,`UVI`=:UVI
         WHERE `startTime`=:startTime AND `cityID`=:cityID;";
-    private $_strDeleteOld = "DELETE FROM `Weather` WHERE `startTime` < NOW();";
+    private $_strDeleteOld = "DELETE FROM `Weather` WHERE `startTime` < DATE_ADD(NOW(),INTERVAL 1 DAY);";
     private $_strCheckSingleWeatherExist = "SELECT COUNT(*) FROM `Weather` WHERE `startTime`=:startTime AND `cityID`=:cityID;";
     private $_strGetNow = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(HOUR, NOW(), `startTime`) < 36 AND `cityID`=:cityID;";
     private $_strGetTwoDay = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(DAY, NOW(), `startTime`) < 3 AND `cityID`=:cityID;";

@@ -4,21 +4,20 @@ require_once "{$_SERVER['DOCUMENT_ROOT']}/RD1_Assignment/models/config.php";
 class CityDAO_PDO implements CityDAO
 {
 
-    private $_strInsert = "INSERT INTO `Citys`(`cityID`, `cityName`) VALUES (:cityID,:cityName);";
-    private $_strUpdate = "UPDATE `Citys` SET `cityName`=:cityName WHERE `cityID`=:cityID;";
-    private $_strDelete = "DELETE FROM `Citys` WHERE `cityID`=:cityID;";
-    private $_strCheckCityExist = "SELECT COUNT(*) FROM `Citys` WHERE `cityID`=:cityID;";
+    private $_strInsert = "INSERT INTO `Citys`(`cityName`) VALUES (:cityName);";
+    private $_strUpdate = "UPDATE `Citys` SET `cityName`=:cityName WHERE `cityName`=:cityName;";
+    private $_strDelete = "DELETE FROM `Citys` WHERE `cityName`=:cityName;";
+    private $_strCheckCityExist = "SELECT COUNT(*) FROM `Citys` WHERE `cityName` LIKE :cityName;";
     private $_strGetAll = "SELECT * FROM `Citys`;";
-    private $_strGetOne = "SELECT * FROM `Citys` WHERE `cityID`=:cityID;";
+    private $_strGetOne = "SELECT * FROM `Citys` WHERE `cityName` LINK '%:cityName%';";
 
     //新增會員
-    public function insertCity($cityID, $cityName)
+    public function insertCity($cityName)
     {
         try {
             $dbh = Config::getDBConnect();
             $dbh->beginTransaction();
             $sth = $dbh->prepare($this->_strInsert);
-            $sth->bindParam("cityID", $cityID);
             $sth->bindParam("cityName", $cityName);
             $sth->execute();
             $dbh->commit();
@@ -34,7 +33,6 @@ class CityDAO_PDO implements CityDAO
     public function insertCityByObj($city)
     {
         return $this->insertCity(
-            $city->getCityID(),
             $city->getCityName()
         );
     }
@@ -46,7 +44,6 @@ class CityDAO_PDO implements CityDAO
             $dbh = Config::getDBConnect();
             $dbh->beginTransaction();
             $sth = $dbh->prepare($this->_strUpdate);
-            $sth->bindParam("cityID", $city->getCityID());
             $sth->bindParam("cityName", $city->getCityName());
             $sth->execute();
             $dbh->commit();
@@ -69,7 +66,7 @@ class CityDAO_PDO implements CityDAO
             $dbh = Config::getDBConnect();
             $dbh->beginTransaction();
             $sth = $dbh->prepare($this->_strDelete);
-            $sth->bindParam("cityID", $id);
+            $sth->bindParam("cityName", $id);
             $sth->execute();
             $dbh->commit();
             $sth = null;
@@ -101,7 +98,7 @@ class CityDAO_PDO implements CityDAO
         try {
             $dbh = Config::getDBConnect();
             $sth = $dbh->prepare($this->_strGetOne);
-            $sth->bindParam("cityID", $id);
+            $sth->bindParam("cityName", $id);
             $sth->execute();
             $request = $sth->fetch(PDO::FETCH_ASSOC);
             $sth = null;
@@ -119,7 +116,8 @@ class CityDAO_PDO implements CityDAO
             $dbh = Config::getDBConnect();
             $dbh->beginTransaction();
             $sth = $dbh->prepare($this->_strCheckCityExist);
-            $sth->bindParam("cityID", $id);
+            $id="%$id%";
+            $sth->bindParam("cityName", $id);
             $sth->execute();
             $request = $sth->fetch(PDO::FETCH_NUM);
         } catch (Exception $err) {

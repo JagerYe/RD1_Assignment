@@ -6,6 +6,17 @@ class CityController extends Controller
         $this->requireDAO("city");
     }
 
+    public function insertByApiObj($location)
+    {
+        if (CityService::getDAO()->insertCity(
+            $location->parameter['0']->parameterValue
+        )) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function insertByObj($str)
     {
 
@@ -58,4 +69,8 @@ class CityController extends Controller
         return false;
     }
 
+    public function checkCityExist($id)
+    {
+        return CityService::getDAO()->checkCityExist($id);
+    }
 }

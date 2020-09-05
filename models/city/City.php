@@ -1,21 +1,25 @@
 <?php
 class City implements \JsonSerializable
 {
-    private $_cityID;
     private $_cityName;
+
+    public static function apiObjToModel($apiObj)
+    {
+        return new City($apiObj->geocode, $apiObj->locationName);
+    }
 
     public static function jsonStringToModel($jsonStr)
     {
         $jsonObj = json_decode($jsonStr);
 
-        return new City($jsonObj->_cityID, $jsonObj->_cityName);
+        return new City($jsonObj->_cityName);
     }
 
     public static function jsonArrayStringToModelsArray($jsonStr)
     {
         $jsonArr = json_decode($jsonStr);
         foreach ($jsonArr as $jsonObj) {
-            $citys[] = new City($jsonObj->_cityID, $jsonObj->_cityName);
+            $citys[] = new City($jsonObj->_cityName);
         }
         return $citys;
     }
@@ -23,7 +27,6 @@ class City implements \JsonSerializable
     public static function dbDataToModel($request)
     {
         return new City(
-            $request['cityID'],
             $request['cityName'],
         );
     }
@@ -32,27 +35,15 @@ class City implements \JsonSerializable
     {
         foreach ($requests as $request) {
             $citys[] = new City(
-                $request['cityID'],
                 $request['cityName'],
             );
         }
         return $citys;
     }
 
-    public function __construct($cityID, $cityName)
+    public function __construct($cityName)
     {
-        $this->setCityID($cityID);
         $this->setCityName($cityName);
-    }
-
-    public function getCityID()
-    {
-        return $this->_cityID;
-    }
-    public function setCityID($cityID)
-    {
-        $this->_cityID = $cityID;
-        return true;
     }
 
     public function getCityName()

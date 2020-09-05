@@ -1,19 +1,30 @@
 <?php
 class Rainfall implements \JsonSerializable
 {
-    private $_town_sn;
-    private $_cityID;
+    private $_stationId;
+    private $_cityName;
     private $_locationName;
     private $_rain;
     private $_hour_24;
+
+    public static function apiObjToModel($apiObj)
+    {
+        return new Rainfall(
+            $apiObj->stationId,
+            $apiObj->parameter['0']->parameterValue,
+            $apiObj->locationName,
+            $apiObj->weatherElement['2']->elementValue = 0,
+            $apiObj->weatherElement['6']->elementValue = 0
+        );
+    }
 
     public static function jsonStringToModel($jsonStr)
     {
         $jsonObj = json_decode($jsonStr);
 
         return new Rainfall(
-            $jsonObj->_town_sn,
-            $jsonObj->_cityID,
+            $jsonObj->_stationId,
+            $jsonObj->_cityName,
             $jsonObj->_locationName,
             $jsonObj->_rain = null,
             $jsonObj->_hour_24 = null
@@ -27,8 +38,8 @@ class Rainfall implements \JsonSerializable
 
 
         foreach ($jsonArr as $jsonObj) {
-            $rainfall->setTown_sn($jsonObj->_town_sn);
-            $rainfall->setCityID($jsonObj->_cityID);
+            $rainfall->setstationId($jsonObj->_stationId);
+            $rainfall->setCityName($jsonObj->_cityName);
             $rainfall->setLocationName($jsonObj->_locationName);
             $rainfall->setRain($jsonObj->_rain);
             $rainfall->setHour_24($jsonObj->_hour_24);
@@ -40,8 +51,8 @@ class Rainfall implements \JsonSerializable
     public static function dbDataToModel($request)
     {
         return new Rainfall(
-            $request['town_sn'],
-            $request['cityID'],
+            $request['stationId'],
+            $request['cityName'],
             $request['locationName'],
             $request['rain'],
             $request['hour_24']
@@ -52,8 +63,8 @@ class Rainfall implements \JsonSerializable
     {
         foreach ($requests as $request) {
             $records[] = new Rainfall(
-                $request['town_sn'],
-                $request['cityID'],
+                $request['stationId'],
+                $request['cityName'],
                 $request['locationName'],
                 $request['rain'],
                 $request['hour_24']
@@ -63,36 +74,36 @@ class Rainfall implements \JsonSerializable
     }
 
     public function __construct(
-        $town_sn,
-        $cityID,
+        $stationId,
+        $cityName,
         $locationName,
         $rain = null,
         $hour_24 = null
     ) {
-        $this->setTown_sn($town_sn);
-        $this->setCityID($cityID);
+        $this->setstationId($stationId);
+        $this->setCityName($cityName);
         $this->setLocationName($locationName);
         $this->setRain($rain);
         $this->setHour_24($hour_24);
     }
 
-    public function getTown_sn()
+    public function getstationId()
     {
-        return $this->_town_sn;
+        return $this->_stationId;
     }
-    public function setTown_sn($town_sn)
+    public function setstationId($stationId)
     {
-        $this->_town_sn = $town_sn;
+        $this->_stationId = $stationId;
         return true;
     }
 
-    public function getCityID()
+    public function getCityName()
     {
-        return $this->_cityID;
+        return $this->_cityName;
     }
-    public function setCityID($cityID)
+    public function setCityName($cityName)
     {
-        $this->_cityID = $cityID;
+        $this->_cityName = $cityName;
         return true;
     }
 
@@ -112,6 +123,9 @@ class Rainfall implements \JsonSerializable
     }
     public function setRain($rain)
     {
+        if ($rain == null || $rain < 0) {
+            $rain = 0;
+        }
         $this->_rain = $rain;
         return true;
     }
@@ -122,6 +136,9 @@ class Rainfall implements \JsonSerializable
     }
     public function setHour_24($hour_24)
     {
+        if ($hour_24 == null || $hour_24 < 0) {
+            $rain = 0;
+        }
         $this->_hour_24 = $hour_24;
         return true;
     }

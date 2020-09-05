@@ -4,16 +4,15 @@ USE `RD1_Assignment`;
 
 DROP TABLE IF EXISTS `Citys`;
 CREATE TABLE `Citys`(
-    `cityID` INT NOT NULL,
     `cityName` VARCHAR(20) NOT NULL,
-    PRIMARY KEY (`cityID`)
+    PRIMARY KEY (`cityName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `Weather`;
 CREATE TABLE `Weather` (
   `startTime` datetime NOT NULL,
   `endTime` datetime NOT NULL,
-  `cityID` int NOT NULL,
+  `cityName` VARCHAR(20) NOT NULL,
   `wx` VARCHAR(20),
   `t` INT,
   `minT` INT,
@@ -25,17 +24,17 @@ CREATE TABLE `Weather` (
   `wS` INT,
   `wD` VARCHAR(20),
   `uvi` INT,
-  PRIMARY KEY (`startTime`,`cityID`),
-  FOREIGN KEY (`cityID`) REFERENCES `Citys`(`cityID`)
+  PRIMARY KEY (`startTime`,`cityName`),
+  FOREIGN KEY (`cityName`) REFERENCES `Citys`(`cityName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `Rainfall`;
 CREATE TABLE `Rainfall` (
-  `town_sn` INT NOT NULL,
-  `cityID` int NOT NULL,
-  `locationName` VARCHAR(20),
+  `stationId` VARCHAR(20) NOT NULL,
+  `cityName` VARCHAR(20) NOT NULL,
+  `locationName` VARCHAR(20) NOT NULL,
   `rain` INT,
   `hour_24` INT,
-  PRIMARY KEY (`town_sn`),
-  FOREIGN KEY (`cityID`) REFERENCES `Citys`(`cityID`)
+  PRIMARY KEY (`stationId`),
+  FOREIGN KEY (`cityName`) REFERENCES `Citys`(`cityName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -7,7 +7,16 @@ class RainfallController extends Controller
         $this->requireDAO("rainfall");
     }
 
-    public function insertByObj($str)
+    public function insertByObj($rainfall)
+    {
+        if (RainfallService::getDAO()->insertRainfallByObj($rainfall)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function insertByJsonStr($str)
     {
         if (!($record = $this->getJsonToModel("rainfall", $str))) {
             return false;
@@ -20,7 +29,15 @@ class RainfallController extends Controller
         return false;
     }
 
-    public function update($str)
+    public function updateByObj($rainfall)
+    {
+        if ($id = RainfallService::getDAO()->updateRainfall($rainfall)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateBuJsonStr($str)
     {
         if (!($record = $this->getJsonToModel("rainfall", $str))) {
             return false;
@@ -44,6 +61,14 @@ class RainfallController extends Controller
     public function getCityObservatory($id)
     {
         if ($record = RainfallService::getDAO()->getCityObservatory($id)) {
+            return json_encode($record);
+        }
+        return false;
+    }
+
+    public function checkExist($id)
+    {
+        if ($record = RainfallService::getDAO()->checkExist($id)) {
             return json_encode($record);
         }
         return false;
