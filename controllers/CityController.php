@@ -9,7 +9,7 @@ class CityController extends Controller
     public function insertByApiObj($location)
     {
         if (CityService::getDAO()->insertCity(
-            $location->parameter['0']->parameterValue
+            $location->locationName
         )) {
             return true;
         }

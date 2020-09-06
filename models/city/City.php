@@ -3,11 +3,6 @@ class City implements \JsonSerializable
 {
     private $_cityName;
 
-    public static function apiObjToModel($apiObj)
-    {
-        return new City($apiObj->geocode, $apiObj->locationName);
-    }
-
     public static function jsonStringToModel($jsonStr)
     {
         $jsonObj = json_decode($jsonStr);

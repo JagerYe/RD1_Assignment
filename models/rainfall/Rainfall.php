@@ -13,8 +13,8 @@ class Rainfall implements \JsonSerializable
             $apiObj->stationId,
             $apiObj->parameter['0']->parameterValue,
             $apiObj->locationName,
-            $apiObj->weatherElement['2']->elementValue = 0,
-            $apiObj->weatherElement['6']->elementValue = 0
+            $apiObj->weatherElement['2']->elementValue,
+            $apiObj->weatherElement['6']->elementValue
         );
     }
 
@@ -26,8 +26,8 @@ class Rainfall implements \JsonSerializable
             $jsonObj->_stationId,
             $jsonObj->_cityName,
             $jsonObj->_locationName,
-            $jsonObj->_rain = null,
-            $jsonObj->_hour_24 = null
+            $jsonObj->_rain,
+            $jsonObj->_hour_24
         );
     }
 

@@ -11,12 +11,40 @@ $cityC->requireDAO("city");
 $rainfallC->requireDAO("rainfall");
 $weatherC->requireDAO("weather");
 
-$url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
+// //aWeek
+$url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
 $lines_array = file($url);
 $jsonObj = json_decode($lines_array["0"]);
+// //twoDays
+// $url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
+// $lines_array = file($url);
+// $jsonObj = json_decode($lines_array["0"]);
+//36hours
+// $url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
+// $lines_array = file($url);
+// $jsonObj = json_decode($lines_array["0"]);
 
-$locations = $jsonObj->records->location;
 
+
+//天氣更新
+updateWeather();
+function updateWeather()
+{
+    global $jsonObj, $weatherC;
+    //aWeek
+    $location = $jsonObj->records->locations['0']->location;
+    $weathers = $weatherC->getApiObjToModels("weather", $location);
+    foreach ($weathers as $weather) {
+        if ($weatherC->checkWeatherExist($weather->getStartTime(), $weather->getCityName())) {
+            $weatherC->updateByObj($weather);
+        }else{
+            $weatherC->insertByObj($weather);
+        }
+    }
+}
+
+
+// $locations= $jsonObj->records->location;
 //更新城市
 // insertCity();
 // function insertCity()
@@ -25,12 +53,13 @@ $locations = $jsonObj->records->location;
 //     global $cityC;
 //     foreach ($locations as $location) {
 
-//         if (!$cityC->checkCityExist($location->parameter['0']->parameterValue)) {
+//         if (!$cityC->checkCityExist($location->locationName)) {
 //             $cityC->insertByApiObj($location);
 //         }
 //     }
 // }
 
+// $locations = $jsonObj->records->location;
 //雨量更新
 // updateRainfall();
 // function updateRainfall()

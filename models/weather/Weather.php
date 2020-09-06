@@ -2,7 +2,7 @@
 class Weather implements \JsonSerializable
 {
     private $_startTime; //開始時間
-    private $_cityID; //城市ID
+    private $_cityName; //城市ID
     private $_endTime; //結束時間
     private $_wx; //天氣現象
     private $_t; //平均溫度
@@ -16,13 +16,127 @@ class Weather implements \JsonSerializable
     private $_wD; //風向
     private $_uvi; //紫外線
 
+    public static function apiObjToModels($aims, $locations)
+    {
+        switch ($aims) {
+            case "aWeek":
+                return Weather::_apiAWeekToModel($locations);
+            case "twoDays":
+                return Weather::_apiTwoDaysToModel($locations);
+            case "36Hours":
+                return Weather::_api36HoursToModel($locations);
+        }
+    }
+
+    private static function _api36HoursToModel($locations){
+        foreach ($locations as $location) {
+            for ($i = 0; $i < count($location->weatherElement['1']->time); $i++) {
+                $startTime = $location->weatherElement['1']->time[$i]->startTime;
+                if (!($startTime->strpos("06:") > 0 || $startTime->strpos("18:") > 0)) {
+                    continue;
+                }
+                $weather = new Weather("???", "???", "???");
+                $weather->setStartTime($startTime);
+                $weather->setCityName($location->locationName);
+                $weather->setEndTime($location->weatherElement['1']->time[$i]->endTime);
+                $weather->setWX($location->weatherElement['1']->time[$i]->elementValue['0']->value);
+                $weather->setAT($location->weatherElement['2']->time[$i]->elementValue['0']->value);
+                $weather->setT($location->weatherElement['3']->time[$i]->elementValue['0']->value);
+                // $weather->setPOP($location->weatherElement['0']->time[$i]->elementValue['0']->value);
+                $weather->setRH($location->weatherElement['4']->time[$i]->elementValue['0']->value);
+                $weather->setCI($location->weatherElement['5']->time[$i]->elementValue['0']->value);
+                $weather->setWS($location->weatherElement['8']->time[$i]->elementValue['0']->value);
+                $weather->setWD($location->weatherElement['9']->time[$i]->elementValue['0']->value);
+                foreach ($location->weatherElement['7']->time as $time) {
+
+                    if ($time->startTime == $startTime) {
+                        $weather->setPOP($time->elementValue['0']->value);
+                    }
+                    if ($time->startTime >= $startTime) {
+                        break;
+                    }
+                }
+
+                $weathers[] = $weather;
+            }
+        }
+        return $weathers;
+    }
+
+    private static function _apiTwoDaysToModel($locations)
+    {
+        foreach ($locations as $location) {
+            for ($i = 0; $i < count($location->weatherElement['1']->time); $i++) {
+                $startTime = $location->weatherElement['1']->time[$i]->startTime;
+                if (!($startTime->strpos("06:") > 0 || $startTime->strpos("18:") > 0)) {
+                    continue;
+                }
+                $weather = new Weather("???", "???", "???");
+                $weather->setStartTime($startTime);
+                $weather->setCityName($location->locationName);
+                $weather->setEndTime($location->weatherElement['1']->time[$i]->endTime);
+                $weather->setWX($location->weatherElement['1']->time[$i]->elementValue['0']->value);
+                $weather->setAT($location->weatherElement['2']->time[$i]->elementValue['0']->value);
+                $weather->setT($location->weatherElement['3']->time[$i]->elementValue['0']->value);
+                // $weather->setPOP($location->weatherElement['0']->time[$i]->elementValue['0']->value);
+                $weather->setRH($location->weatherElement['4']->time[$i]->elementValue['0']->value);
+                $weather->setCI($location->weatherElement['5']->time[$i]->elementValue['0']->value);
+                $weather->setWS($location->weatherElement['8']->time[$i]->elementValue['0']->value);
+                $weather->setWD($location->weatherElement['9']->time[$i]->elementValue['0']->value);
+                foreach ($location->weatherElement['7']->time as $time) {
+
+                    if ($time->startTime == $startTime) {
+                        $weather->setPOP($time->elementValue['0']->value);
+                    }
+                    if ($time->startTime >= $startTime) {
+                        break;
+                    }
+                }
+
+                $weathers[] = $weather;
+            }
+        }
+        return $weathers;
+    }
+
+    private static function _apiAWeekToModel($locations)
+    {
+        foreach ($locations as $location) {
+            for ($i = 0; $i < count($location->weatherElement['0']->time); $i++) {
+                $weather = new Weather("???", "???", "???");
+                $weather->setStartTime($location->weatherElement['0']->time[$i]->startTime);
+                $weather->setCityName($location->locationName);
+                $weather->setEndTime($location->weatherElement['0']->time[$i]->endTime);
+                $weather->setWX($location->weatherElement['6']->time[$i]->elementValue['0']->value);
+                $weather->setT($location->weatherElement['1']->time[$i]->elementValue['0']->value);
+                $weather->setMinT($location->weatherElement['8']->time[$i]->elementValue['0']->value);
+                $weather->setMaxT($location->weatherElement['12']->time[$i]->elementValue['0']->value);
+                $weather->setPOP($location->weatherElement['0']->time[$i]->elementValue['0']->value);
+                $weather->setRH($location->weatherElement['2']->time[$i]->elementValue['0']->value);
+                $weather->setWS($location->weatherElement['4']->time[$i]->elementValue['0']->value);
+                $weather->setWD($location->weatherElement['13']->time[$i]->elementValue['0']->value);
+                foreach ($location->weatherElement['9']->time as $time) {
+
+                    if ($time->startTime == $weather->getStartTime()) {
+                        $weather->setUVI($time->elementValue['0']->value);
+                    }
+                    if ($time->startTime >= $weather->getStartTime()) {
+                        break;
+                    }
+                }
+                $weathers[] = $weather;
+            }
+        }
+        return $weathers;
+    }
+
     public static function jsonStringToModel($jsonStr)
     {
         $jsonObj = json_decode($jsonStr);
 
         return new Weather(
             $jsonObj->_startTime,
-            $jsonObj->_cityID,
+            $jsonObj->_cityName,
             $jsonObj->_endTime,
             $jsonObj->_wx = null,
             $jsonObj->_t = null,
@@ -44,7 +158,7 @@ class Weather implements \JsonSerializable
         foreach ($jsonArr as $jsonObj) {
             $rainfall[] = new Weather(
                 $jsonObj->_startTime,
-                $jsonObj->_cityID,
+                $jsonObj->_cityName,
                 $jsonObj->_endTime,
                 $jsonObj->_wx = null,
                 $jsonObj->_t = null,
@@ -66,7 +180,7 @@ class Weather implements \JsonSerializable
     {
         return new Weather(
             $request['startTime'],
-            $request['cityID'],
+            $request['cityName'],
             $request['endTime'],
             $request['wx'],
             $request['t'],
@@ -87,7 +201,7 @@ class Weather implements \JsonSerializable
         foreach ($requests as $request) {
             $records[] = new Weather(
                 $request['startTime'],
-                $request['cityID'],
+                $request['cityName'],
                 $request['endTime'],
                 $request['wx'],
                 $request['t'],
@@ -107,7 +221,7 @@ class Weather implements \JsonSerializable
 
     public function __construct(
         $startTime,
-        $cityID,
+        $cityName,
         $endTime,
         $wx = null,
         $t = null,
@@ -122,7 +236,7 @@ class Weather implements \JsonSerializable
         $uvi = null
     ) {
         $this->setStartTime($startTime);
-        $this->setCityID($cityID);
+        $this->setCityName($cityName);
         $this->setEndTime($endTime);
         $this->setWX($wx);
         $this->setT($t);
@@ -147,13 +261,13 @@ class Weather implements \JsonSerializable
         return true;
     }
 
-    public function getCityID()
+    public function getCityName()
     {
-        return $this->_cityID;
+        return $this->_cityName;
     }
-    public function setCityID($cityID)
+    public function setCityName($cityName)
     {
-        $this->_cityID = $cityID;
+        $this->_cityName = $cityName;
         return true;
     }
 
@@ -183,6 +297,9 @@ class Weather implements \JsonSerializable
     }
     public function setT($t)
     {
+        if ($t < -273.15) {
+            $t = null;
+        }
         $this->_t = $t;
         return true;
     }
@@ -193,6 +310,9 @@ class Weather implements \JsonSerializable
     }
     public function setMinT($minT)
     {
+        if ($minT < -273.15) {
+            $minT = null;
+        }
         $this->_minT = $minT;
         return true;
     }
@@ -203,6 +323,9 @@ class Weather implements \JsonSerializable
     }
     public function setMaxT($maxT)
     {
+        if ($maxT < -273.15) {
+            $maxT = null;
+        }
         $this->_maxT = $maxT;
         return true;
     }
@@ -223,6 +346,9 @@ class Weather implements \JsonSerializable
     }
     public function setPOP($pop)
     {
+        if ($pop < 0) {
+            $pop = 0;
+        }
         $this->_pop = $pop;
         return true;
     }

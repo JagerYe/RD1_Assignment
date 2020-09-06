@@ -1,13 +1,17 @@
 <?php
 class WeatherController extends Controller
 {
-    private $_dao;
     public function __construct()
     {
         $this->requireDAO("weather");
     }
 
-    public function insertByObj($str)
+    public function insertByObj($record)
+    {
+        return WeatherService::getDAO()->insertWeatherByObj($record);
+    }
+
+    public function insertByJson($str)
     {
         if (!($record = $this->getJsonToModel("weather", $str))) {
             return false;
@@ -20,7 +24,12 @@ class WeatherController extends Controller
         return false;
     }
 
-    public function update($str)
+    public function updateByObj($record)
+    {
+        return WeatherService::getDAO()->updateWeather($record);
+    }
+
+    public function updateByJson($str)
     {
         if (!($record = $this->getJsonToModel("weather", $str))) {
             return false;
@@ -60,5 +69,10 @@ class WeatherController extends Controller
             return json_encode($record);
         }
         return false;
+    }
+
+    public function checkWeatherExist($startTime, $cityName)
+    {
+        return WeatherService::getDAO()->checkSingleWeatherExist($startTime, $cityName);
     }
 }

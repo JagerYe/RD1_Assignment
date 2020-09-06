@@ -5,27 +5,27 @@ class WeatherDAO_PDO implements WeatherDAO
 {
 
     private $_strInsert = "INSERT INTO `Weather`(
-        `startTime`, `endTime`, `cityID`, `Wx`, `T`,
+        `startTime`, `endTime`, `cityName`, `Wx`, `T`,
         `MinT`, `MaxT`, `AT`, `PoP`, `RH`,
         `CI`, `WS`, `WD`, `UVI`)
-        VALUES (:startTime,:endTime,:cityID,:Wx,:T,
+        VALUES (:startTime,:endTime,:cityName,:Wx,:T,
                 :MinT,:MaxT,:AT,:PoP,:RH,
                 :CI,:WS,:WD,:UVI);";
     private $_strUpdate = "UPDATE `Weather`
         SET `endTime`=:endTime,`Wx`=:Wx,`T`=:T,`MinT`=:MinT,`MaxT`=:MaxT,
             `AT`=:AT,`PoP`=:PoP,`RH`=:RH,`CI`=:CI,`WS`=:WS,
             `WD`=:WD,`UVI`=:UVI
-        WHERE `startTime`=:startTime AND `cityID`=:cityID;";
+        WHERE `startTime`=:startTime AND `cityName`=:cityName;";
     private $_strDeleteOld = "DELETE FROM `Weather` WHERE `startTime` < DATE_ADD(NOW(),INTERVAL 1 DAY);";
-    private $_strCheckSingleWeatherExist = "SELECT COUNT(*) FROM `Weather` WHERE `startTime`=:startTime AND `cityID`=:cityID;";
-    private $_strGetNow = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(HOUR, NOW(), `startTime`) < 36 AND `cityID`=:cityID;";
-    private $_strGetTwoDay = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(DAY, NOW(), `startTime`) < 3 AND `cityID`=:cityID;";
-    private $_strGetAWeek = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(WEEK, NOW(), `startTime`) < 1 AND `cityID`=:cityID;";
+    private $_strCheckSingleWeatherExist = "SELECT COUNT(*) FROM `Weather` WHERE `startTime`=:startTime AND `cityName`=:cityName;";
+    private $_strGetNow = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(HOUR, NOW(), `startTime`) < 36 AND `cityName`=:cityName;";
+    private $_strGetTwoDay = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(DAY, NOW(), `startTime`) < 3 AND `cityName`=:cityName;";
+    private $_strGetAWeek = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(WEEK, NOW(), `startTime`) < 1 AND `cityName`=:cityName;";
 
     //新增
     public function insertWeather(
         $startTime,
-        $cityID,
+        $cityName,
         $endTime,
         $wx,
         $t,
@@ -45,7 +45,7 @@ class WeatherDAO_PDO implements WeatherDAO
             $sth = $dbh->prepare($this->_strInsert);
             $sth->bindParam("startTime", $startTime);
             $sth->bindParam("endTime", $endTime);
-            $sth->bindParam("cityID", $cityID);
+            $sth->bindParam("cityName", $cityName);
             $sth->bindParam("Wx", $wx);
             $sth->bindParam("T", $t);
             $sth->bindParam("MinT", $minT);
@@ -74,7 +74,7 @@ class WeatherDAO_PDO implements WeatherDAO
     {
         return $this->insertWeather(
             $weather->getStartTime(),
-            $weather->getCityID(),
+            $weather->getcityName(),
             $weather->getEndTime(),
             $weather->getWX(),
             $weather->getT(),
@@ -99,7 +99,7 @@ class WeatherDAO_PDO implements WeatherDAO
             $sth = $dbh->prepare($this->_strUpdate);
             $sth->bindParam("startTime", $weather->getStartTime());
             $sth->bindParam("endTime", $weather->getEndTime());
-            $sth->bindParam("cityID", $weather->getCityID());
+            $sth->bindParam("cityName", $weather->getcityName());
             $sth->bindParam("Wx", $weather->getWX());
             $sth->bindParam("T", $weather->getT());
             $sth->bindParam("MinT", $weather->getMinT());
@@ -139,13 +139,13 @@ class WeatherDAO_PDO implements WeatherDAO
         return true;
     }
 
-    public function checkSingleWeatherExist($startTime, $cityID)
+    public function checkSingleWeatherExist($startTime, $cityName)
     {
         try {
             $dbh = Config::getDBConnect();
             $sth = $dbh->prepare($this->_strCheckSingleWeatherExist);
             $sth->bindParam("startTime", $startTime);
-            $sth->bindParam("cityID", $cityID);
+            $sth->bindParam("cityName", $cityName);
             $sth->execute();
             $request = $sth->fetch(PDO::FETCH_NUM);
             $sth = null;
@@ -156,22 +156,22 @@ class WeatherDAO_PDO implements WeatherDAO
         return $request['0'];
     }
 
-    public function getCityNowWeather($cityID)
+    public function getCityNowWeather($cityName)
     {
-        return $this->getCityWeather($cityID, "now");
+        return $this->getCityWeather($cityName, "now");
     }
 
-    public function getCityTwoDaysWeather($cityID)
+    public function getCityTwoDaysWeather($cityName)
     {
-        return $this->getCityWeather($cityID, "twoDay");
+        return $this->getCityWeather($cityName, "twoDay");
     }
 
-    public function getCityAWeekWeather($cityID)
+    public function getCityAWeekWeather($cityName)
     {
-        return $this->getCityWeather($cityID, "aWeek");
+        return $this->getCityWeather($cityName, "aWeek");
     }
 
-    private function getCityWeather($cityID, $howLong = "now")
+    private function getCityWeather($cityName, $howLong = "now")
     {
         try {
             $dbh = Config::getDBConnect();
@@ -188,7 +188,7 @@ class WeatherDAO_PDO implements WeatherDAO
                     break;
             }
 
-            $sth->bindParam("cityID", $cityID);
+            $sth->bindParam("cityName", $cityName);
             $sth->execute();
             $requests = $sth->fetchAll(PDO::FETCH_ASSOC);
             $sth = null;

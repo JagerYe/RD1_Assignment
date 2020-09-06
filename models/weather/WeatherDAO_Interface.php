@@ -3,7 +3,7 @@ interface WeatherDAO
 {
     public function insertWeather(
         $startTime,
-        $cityID,
+        $cityName,
         $endTime,
         $wx,
         $t,
@@ -19,7 +19,7 @@ interface WeatherDAO
     );
     public function updateWeather($weather);
     public function deleteOldWeather();
-    public function getCityNowWeather($cityID);
-    public function getCityTwoDaysWeather($cityID);
-    public function getCityAWeekWeather($cityID);
+    public function getCityNowWeather($cityName);
+    public function getCityTwoDaysWeather($cityName);
+    public function getCityAWeekWeather($cityName);
 }

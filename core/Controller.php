@@ -22,4 +22,9 @@ class Controller
     {
         return $model::apiObjToModel($apiObj);
     }
+
+    public function getApiObjToModels($model, $apiObj)
+    {
+        return $model::apiObjToModels($apiObj);
+    }
 }

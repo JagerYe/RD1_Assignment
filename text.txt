@@ -1,5 +1,5 @@
 當天所有資料：https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?
 ３天所有資料：https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?
-一週所有資料：https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091？
+一週所有資料：https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?
 
 雨量：https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?
