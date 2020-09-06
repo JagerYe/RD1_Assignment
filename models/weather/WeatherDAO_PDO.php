@@ -21,6 +21,7 @@ class WeatherDAO_PDO implements WeatherDAO
     private $_strGetNow = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(HOUR, NOW(), `startTime`) < 36 AND `cityName`=:cityName;";
     private $_strGetTwoDay = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(DAY, NOW(), `startTime`) < 3 AND `cityName`=:cityName;";
     private $_strGetAWeek = "SELECT * FROM `Weather` WHERE TIMESTAMPDIFF(WEEK, NOW(), `startTime`) < 1 AND `cityName`=:cityName;";
+    private $_strGetOne = "SELECT * FROM `weather` WHERE `startTime`=:startTime AND `cityName`=:cityName;";
 
     //新增
     public function insertWeather(
@@ -95,6 +96,20 @@ class WeatherDAO_PDO implements WeatherDAO
     {
         try {
             $dbh = Config::getDBConnect();
+            $oldWeather = $this->getOneWeather($weather->getStartTime(), $weather->getCityName());
+
+            if ($weather->getWX() === null) $weather->setWX($oldWeather->getWX());
+            if ($weather->getT() === null) $weather->setT($oldWeather->getT());
+            if ($weather->getMinT() === null) $weather->setMinT($oldWeather->getMinT());
+            if ($weather->getMaxT() === null) $weather->setMaxT($oldWeather->getMaxT());
+            if ($weather->getAT() === null) $weather->setAT($oldWeather->getAT());
+            if ($weather->getPOP() === null) $weather->setPOP($oldWeather->getPOP());
+            if ($weather->getRH() === null) $weather->setRH($oldWeather->getRH());
+            if ($weather->getCI() === null) $weather->setCI($oldWeather->getCI());
+            if ($weather->getWS() === null) $weather->setWS($oldWeather->getWS());
+            if ($weather->getWD() === null) $weather->setWD($oldWeather->getWD());
+            if ($weather->getUVI() === null) $weather->setUVI($oldWeather->getUVI());
+
             $dbh->beginTransaction();
             $sth = $dbh->prepare($this->_strUpdate);
             $sth->bindParam("startTime", $weather->getStartTime());
@@ -120,6 +135,23 @@ class WeatherDAO_PDO implements WeatherDAO
         }
         $dbh = null;
         return true;
+    }
+
+    private function getOneWeather($startTime, $cityName)
+    {
+        try {
+            $dbh = Config::getDBConnect();
+            $sth = $dbh->prepare($this->_strGetOne);
+            $sth->bindParam("startTime", $startTime);
+            $sth->bindParam("cityName", $cityName);
+            $sth->execute();
+            $requests = $sth->fetch(PDO::FETCH_ASSOC);
+            $sth = null;
+        } catch (PDOException $err) {
+            return false;
+        }
+        $dbh = null;
+        return Weather::dbDataToModel($requests);
     }
 
     public function deleteOldWeather()

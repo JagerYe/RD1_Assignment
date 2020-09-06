@@ -11,10 +11,10 @@ $cityC->requireDAO("city");
 $rainfallC->requireDAO("rainfall");
 $weatherC->requireDAO("weather");
 
-// //aWeek
-$url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
-$lines_array = file($url);
-$jsonObj = json_decode($lines_array["0"]);
+//aWeek
+// $url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
+// $lines_array = file($url);
+// $jsonObj = json_decode($lines_array["0"]);
 // //twoDays
 // $url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
 // $lines_array = file($url);
@@ -27,17 +27,33 @@ $jsonObj = json_decode($lines_array["0"]);
 
 
 //天氣更新
+$weatherC->deleteOld();
 updateWeather();
 function updateWeather()
 {
-    global $jsonObj, $weatherC;
-    //aWeek
+    global $weatherC;
+    $url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
+    $lines_array = file($url);
+    $jsonObj = json_decode($lines_array["0"]);
     $location = $jsonObj->records->locations['0']->location;
-    $weathers = $weatherC->getApiObjToModels("weather", $location);
+    $weathers = Weather::apiObjToModels("aWeek", $location);
     foreach ($weathers as $weather) {
         if ($weatherC->checkWeatherExist($weather->getStartTime(), $weather->getCityName())) {
             $weatherC->updateByObj($weather);
-        }else{
+        } else {
+            $weatherC->insertByObj($weather);
+        }
+    }
+
+    $url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720';
+    $lines_array = file($url);
+    $jsonObj = json_decode($lines_array["0"]);
+    $location = $jsonObj->records->locations['0']->location;
+    $weathers = Weather::apiObjToModels("twoDays", $location);
+    foreach ($weathers as $weather) {
+        if ($weatherC->checkWeatherExist($weather->getStartTime(), $weather->getCityName())) {
+            $weatherC->updateByObj($weather);
+        } else {
             $weatherC->insertByObj($weather);
         }
     }
