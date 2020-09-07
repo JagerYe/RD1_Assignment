@@ -1,4 +1,4 @@
-export class Member {
+export class City {
     constructor(
         userID,
         userName,

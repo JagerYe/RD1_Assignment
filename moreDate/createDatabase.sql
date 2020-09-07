@@ -5,6 +5,7 @@ USE `RD1_Assignment`;
 DROP TABLE IF EXISTS `Citys`;
 CREATE TABLE `Citys`(
     `cityName` VARCHAR(20) NOT NULL,
+    `orderID` INT,
     PRIMARY KEY (`cityName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -38,3 +39,27 @@ CREATE TABLE `Rainfall` (
   PRIMARY KEY (`stationId`),
   FOREIGN KEY (`cityName`) REFERENCES `Citys`(`cityName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `Citys`(`cityName`, `orderID`) VALUES
+('臺北市',0),
+('新北市',1),
+('基隆市',2),
+('桃園市',3),
+('新竹市',4),
+('新竹縣',5),
+('苗栗縣',6),
+('臺中市',7),
+('彰化縣',8),
+('南投縣',9),
+('雲林縣',10),
+('嘉義市',11),
+('嘉義縣',12),
+('臺南市',13),
+('高雄市',14),
+('屏東縣',15),
+('宜蘭縣',16),
+('花蓮縣',17),
+('臺東縣',18),
+('澎湖縣',19),
+('連江縣',20),
+('金門縣',21);

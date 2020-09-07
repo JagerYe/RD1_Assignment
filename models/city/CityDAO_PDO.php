@@ -8,8 +8,8 @@ class CityDAO_PDO implements CityDAO
     private $_strUpdate = "UPDATE `Citys` SET `cityName`=:cityName WHERE `cityName`=:cityName;";
     private $_strDelete = "DELETE FROM `Citys` WHERE `cityName`=:cityName;";
     private $_strCheckCityExist = "SELECT COUNT(*) FROM `Citys` WHERE `cityName` LIKE :cityName;";
-    private $_strGetAll = "SELECT * FROM `Citys`;";
-    private $_strGetOne = "SELECT * FROM `Citys` WHERE `cityName` LINK '%:cityName%';";
+    private $_strGetAll = "SELECT `cityName` FROM `Citys` ORDER BY `orderID`;";
+    private $_strGetOne = "SELECT `cityName` FROM `Citys` WHERE `cityName` LINK '%:cityName%' ORDER BY `orderID`;";
 
     //新增會員
     public function insertCity($cityName)

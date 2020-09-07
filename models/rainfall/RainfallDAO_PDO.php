@@ -12,7 +12,7 @@ class RainfallDAO_PDO implements RainfallDAO
         WHERE `stationId`=:stationId AND `cityName`=:cityName;";
     private $_strGetOneByID = "SELECT * FROM `Rainfall` WHERE `stationId`=:stationId;";
     private $_strCityGetObservatory = "SELECT `stationId`, `cityName`, `locationName` FROM `Rainfall` WHERE `cityName`=:cityName;";
-    private $_strCheckExist = "SELECT COUNT(*) FROM `rainfall` WHERE `stationId`=:stationId";
+    private $_strCheckExist = "SELECT COUNT(*) FROM `Rainfall` WHERE `stationId`=:stationId;";
 
     //新增
     public function insertRainfall(
@@ -65,7 +65,7 @@ class RainfallDAO_PDO implements RainfallDAO
             $sth->bindParam("locationName", $Rainfall->getLocationName());
             $sth->bindParam("rain", $Rainfall->getRain());
             $sth->bindParam("hour_24", $Rainfall->getHour_24());
-            $sth->bindParam("stationId", $Rainfall->getstationId());
+            $sth->bindParam("stationId", $Rainfall->getStationId());
             $sth->bindParam("cityName", $Rainfall->getCityName());
             $sth->execute();
             $dbh->commit();
@@ -115,7 +115,7 @@ class RainfallDAO_PDO implements RainfallDAO
         try {
             $dbh = Config::getDBConnect();
             $sth = $dbh->prepare($this->_strCheckExist);
-            $sth->bindParam("stationId", $stationId);
+            $sth->bindParam("stationId", $id);
             $sth->execute();
             $requests = $sth->fetch(PDO::FETCH_NUM);
             $sth = null;

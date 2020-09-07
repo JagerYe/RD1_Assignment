@@ -1,7 +1,6 @@
 <?php
 class RainfallController extends Controller
 {
-    private $_dao;
     public function __construct()
     {
         $this->requireDAO("rainfall");
@@ -68,9 +67,6 @@ class RainfallController extends Controller
 
     public function checkExist($id)
     {
-        if ($record = RainfallService::getDAO()->checkExist($id)) {
-            return json_encode($record);
-        }
-        return false;
+        return RainfallService::getDAO()->checkExist($id);
     }
 }

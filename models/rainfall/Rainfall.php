@@ -34,16 +34,15 @@ class Rainfall implements \JsonSerializable
     public static function jsonArrayStringToModelsArray($jsonStr)
     {
         $jsonArr = json_decode($jsonStr);
-        $rainfall = new Rainfall("", "", "");
-
 
         foreach ($jsonArr as $jsonObj) {
-            $rainfall->setstationId($jsonObj->_stationId);
-            $rainfall->setCityName($jsonObj->_cityName);
-            $rainfall->setLocationName($jsonObj->_locationName);
-            $rainfall->setRain($jsonObj->_rain);
-            $rainfall->setHour_24($jsonObj->_hour_24);
-            $rainfalls[] = $rainfall;
+            $rainfalls[] = new Rainfall(
+                $jsonObj->_stationId,
+                $jsonObj->_cityName,
+                $jsonObj->_locationName,
+                $jsonObj->_rain,
+                $jsonObj->_hour_24
+            );
         }
         return $rainfalls;
     }
@@ -121,12 +120,12 @@ class Rainfall implements \JsonSerializable
     {
         return $this->_rain;
     }
-    public function setRain($rain)
+    public function setRain($data)
     {
-        if ($rain == null || $rain < 0) {
-            $rain = 0;
+        if ($data < 0) {
+            $data = 0;
         }
-        $this->_rain = $rain;
+        $this->_rain = $data;
         return true;
     }
 
@@ -134,12 +133,12 @@ class Rainfall implements \JsonSerializable
     {
         return $this->_hour_24;
     }
-    public function setHour_24($hour_24)
+    public function setHour_24($data)
     {
-        if ($hour_24 == null || $hour_24 < 0) {
-            $rain = 0;
+        if ($data < 0) {
+            $data = 0;
         }
-        $this->_hour_24 = $hour_24;
+        $this->_hour_24 = $data;
         return true;
     }
 

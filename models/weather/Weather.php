@@ -327,7 +327,7 @@ class Weather implements \JsonSerializable
     }
     public function setPOP($pop)
     {
-        if ($pop < 0) {
+        if ($pop < 0 || $pop == " ") {
             $pop = 0;
         }
         $this->_pop = $pop;
