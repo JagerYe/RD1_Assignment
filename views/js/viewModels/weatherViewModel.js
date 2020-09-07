@@ -9,13 +9,13 @@ function getOneWeatherView(startTime, minT, maxT, pop) {
 function getOneDayWeatherView(showDate1, showDate2 = null) {
     if (showDate2 === null) {
         return `<div class="border">
-                    <div>
+                    <div class="weatherDayHeight">
                         <h5></h5>
                         <p></p>
                         <p></p>
                     </div>
                     <hr>
-                    <div class="gray">
+                    <div class="weatherDayHeight gray">
                         <h5>${getTimeStr(showDate1._startTime)}</h5>
                         <p>${showDate1._minT} - ${showDate1._maxT} °C</p>
                         <p>${showDate1._pop} %</p>
@@ -25,13 +25,13 @@ function getOneDayWeatherView(showDate1, showDate2 = null) {
                 </div>`;
     }
     return `<div class="border">
-                <div>
+                <div class="weatherDayHeight">
                     <h5>${getTimeStr(showDate2._startTime)}</h5>
                     <p>${showDate2._minT} - ${showDate2._maxT} °C</p>
                     <p>${showDate2._pop} %</p>
                 </div>
                 <hr>
-                <div class="gray">
+                <div class="weatherDayHeight gray">
                     <h5>${getTimeStr(showDate1._startTime)}</h5>
                     <p>${showDate1._minT} - ${showDate1._maxT} °C</p>
                     <p>${showDate1._pop} %</p>
@@ -43,7 +43,7 @@ function getOneDayWeatherView(showDate1, showDate2 = null) {
 
 function getOneCityTitleView(cityName) {
     return `<h2>${cityName}</h2>
-            <img src="/RD1_Assignment/views/img/${cityName}.jpg">
+            <img src="/RD1_Assignment/views/img/city/${cityName}.jpg">
             <div class="row" id="showAWeather"></div>`;
 }
 

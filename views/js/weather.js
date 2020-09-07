@@ -3,7 +3,7 @@ function weatherInit(params) {
     $("#mainShow").html(getWeatherMenuView());
 
     //change 監聽器
-    $("#selectLocation").change(() => {
+    $("#selectWeatherLocation").change(() => {
         changeWeatherSelect();
     });
 
@@ -14,9 +14,13 @@ function weatherInit(params) {
 }
 
 function getNowWeather() {
+    if ($("#selectWeatherLocation").val() == null) {
+        setTimeout(getNowWeather, 10);
+        return;
+    }
     $.ajax({
         type: "GET",
-        url: `/RD1_Assignment/weather/getCityNow?city=${$("#selectLocation").val()}`
+        url: `/RD1_Assignment/weather/getCityNow?city=${$("#selectWeatherLocation").val()}`
     }).then(function (e) {
         let jsonArr = JSON.parse(e);
         $("#funtionShow").html(getOneCityTitleView(jsonArr["0"]._cityName));
@@ -29,9 +33,13 @@ function getNowWeather() {
 }
 
 function getTwoDaysWeather() {
+    if ($("#selectWeatherLocation").val() == null) {
+        setTimeout(getTwoDaysWeather, 10);
+        return;
+    }
     $.ajax({
         type: "GET",
-        url: `/RD1_Assignment/weather/getCityTwoDays?city=${$("#selectLocation").val()}`
+        url: `/RD1_Assignment/weather/getCityTwoDays?city=${$("#selectWeatherLocation").val()}`
     }).then(function (e) {
         let jsonArr = JSON.parse(e);
         let showDate = new Array();
@@ -65,9 +73,13 @@ function getTwoDaysWeather() {
 }
 
 function getAWeekWeather() {
+    if ($("#selectWeatherLocation").val() == null) {
+        setTimeout(getAWeekWeather, 10);
+        return;
+    }
     $.ajax({
         type: "GET",
-        url: `/RD1_Assignment/weather/getCityAWeek?city=${$("#selectLocation").val()}`
+        url: `/RD1_Assignment/weather/getCityAWeek?city=${$("#selectWeatherLocation").val()}`
     }).then(function (e) {
         let jsonArr = JSON.parse(e);
         let showDate = new Array();
@@ -117,6 +129,6 @@ function changeWeatherSelect() {
     }
     $.ajax({
         type: "GET",
-        url: `/RD1_Assignment/autoUpdate/${updateAims}?loacationName=${$("#selectLocation").val()}`
+        url: `/RD1_Assignment/autoUpdate/${updateAims}?loacationName=${$("#selectWeatherLocation").val()}`
     });
 }

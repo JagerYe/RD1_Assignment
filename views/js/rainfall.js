@@ -2,7 +2,7 @@ function rainfallInit() {
     $("#mainShow").html(getRainfallMenuView());
 
     //各式change事件
-    $("#selectLocation").change(() => {
+    $("#selectRainfallLocation").change(() => {
         getStation();
         $("#selectStation").empty();//這須事先清除，否則會誤抓上一個縣市
         getRainfall();
@@ -16,7 +16,7 @@ function rainfallInit() {
 //抓取觀測站
 function getStation() {
     // 等待city抓取成功
-    let location = $("#selectLocation").val();
+    let location = $("#selectRainfallLocation").val();
     if (location == null) {
         setTimeout(getStation, 10);
         return;

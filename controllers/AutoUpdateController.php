@@ -30,9 +30,11 @@ class AutoUpdateController extends Controller
     public function updateNowWeather($locationName = null)
     {
         if ($locationName === null) {
-            $locationName = " ";
+            $urlStr = "";
+        } else {
+            $urlStr = "&locationName=$locationName";
         }
-        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720&locationName=$locationName";
+        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720$urlStr";
         $lines_array = file($url);
         $jsonObj = json_decode($lines_array["0"]);
         $location = $jsonObj->records->location;
@@ -49,9 +51,11 @@ class AutoUpdateController extends Controller
     public function updateTwoDaysWeather($locationName = null)
     {
         if ($locationName === null) {
-            $locationName = " ";
+            $urlStr = "";
+        } else {
+            $urlStr = "&locationName=$locationName";
         }
-        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720&locationName=$locationName";
+        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720$urlStr";
         $lines_array = file($url);
         $jsonObj = json_decode($lines_array["0"]);
         $location = $jsonObj->records->locations['0']->location;
@@ -68,9 +72,11 @@ class AutoUpdateController extends Controller
     public function updateAWeekWeather($locationName = null)
     {
         if ($locationName === null) {
-            $locationName = " ";
+            $urlStr = "";
+        } else {
+            $urlStr = "&locationName=$locationName";
         }
-        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720&locationName=$locationName";
+        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720$urlStr";
         $lines_array = file($url);
         $jsonObj = json_decode($lines_array["0"]);
         $location = $jsonObj->records->locations['0']->location;
@@ -88,9 +94,11 @@ class AutoUpdateController extends Controller
     private function updateRainfall($locationName = null)
     {
         if ($locationName === null) {
-            $locationName = " ";
+            $urlStr = "";
+        } else {
+            $urlStr = "&locationName=$locationName";
         }
-        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720&locationName=$locationName";
+        $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-082621CE-932C-4699-BFA2-166C55CF8720$urlStr";
         $lines_array = file($url);
         $jsonObj = json_decode($lines_array["0"]);
         $locations = $jsonObj->records->location;

@@ -43,6 +43,15 @@
 	.gray {
 		background: rgba(80, 80, 80, 0.3);
 	}
+
+	.weatherDayHeight{
+		min-height: 150px;
+	}
+
+	img {
+		max-width: 500px;
+		max-height: 500px;
+	}
 </style>
 <script src="/RD1_Assignment/views/js/viewModels/showViewModel.js"></script>
 <script src="/RD1_Assignment/views/js/viewModels/weatherViewModel.js"></script>
@@ -55,39 +64,60 @@
 	import { Weather } from "../js/models/weather.js";
 
 	//抓取城市
-	function getCity() {
+	function getCity(type) {
 		$.ajax({
 			type: "GET",
 			url: "/RD1_Assignment/city/getAll"
 		}).then(function (e) {
 			let jsonArr = JSON.parse(e);
 			$("#selectLocation").empty();
-			jsonArr.forEach(item => {
-				$("#selectLocation").append(
-					`<option value="${item._cityName}">${item._cityName}</option>`
-				);
-			});
+
+			switch (type) {
+				case "weather": {
+					jsonArr.forEach(item => {
+						$("#selectWeatherLocation").append(
+							`<option value="${item._cityName}">${item._cityName}</option>`
+						);
+					});
+				}
+					break;
+				case "rainfall": {
+					jsonArr.forEach(item => {
+						$("#selectRainfallLocation").append(
+							`<option value="${item._cityName}">${item._cityName}</option>`
+						);
+					});
+				}
+					break;
+			}
 
 			//全載入時強制觸發change
-			$("#selectLocation").trigger("change");
+			switch (type) {
+				case "weather":
+					$("#selectWeatherLocation").trigger("change");
+					break;
+				case "rainfall":
+					$("#selectRainfallLocation").trigger("change");
+					break;
+			}
 		});
 	}
 
 	$(window).ready(() => {
 		weatherInit();
-		getCity();
+		getCity("weather");
 
 		// navbar btn click
 		$("#navbarWeather").click(() => {
 			$("#mainShow").empty();
 			weatherInit();
-			getCity();
+			getCity("weather");
 		});
 
 		$("#navaberRainfall").click(() => {
 			$("#mainShow").empty();
 			rainfallInit();
-			getCity();
+			getCity("rainfall");
 		});
 	});
 

@@ -1,6 +1,6 @@
 function getOneStationView(cityName, stationName, rain, hour_24) {
     return `<h2>${cityName} ${stationName}</h2>
-            <img src="/RD1_Assignment/views/img/${cityName}.jpg">
+            <img src="/RD1_Assignment/views/img/city/${cityName}.jpg">
             <div class="row" id="showARainfall">
                 <div class="col">
                     <div>1小時累積雨量</div>
