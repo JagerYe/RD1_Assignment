@@ -7,7 +7,7 @@ class Config
 	{
 		$dsn = "mysql:host=localhost;dbname=RD1_Assignment;port=3306";
 		$dbid = 'root';
-		$dbpasswd = '';
+		$dbpasswd = 'root';
 		$dbh = new PDO($dsn, $dbid, $dbpasswd) or die(mysqli_connect_error());
 		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$dbh->exec("SET CHARACTER SET utf8");

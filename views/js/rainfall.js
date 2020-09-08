@@ -43,6 +43,8 @@ function getRainfall() {
         return;
     }
 
+    doUpdateDB(jsonObj._locationName);
+
     $.ajax({
         type: "GET",
         url: `/RD1_Assignment/rainfall/getOne?id=${id}`
@@ -55,7 +57,6 @@ function getRainfall() {
             jsonObj._hour_24
         ));
 
-        doUpdateDB(jsonObj._locationName);
     });
 }
 

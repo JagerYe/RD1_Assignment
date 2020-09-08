@@ -115,15 +115,15 @@ function changeWeatherSelect() {
     let updateAims;
     switch ($("#selectTime").val()) {
         case "now":
-            getNowWeather();
+            setTimeout(getNowWeather,1);
             updateAims = "updateNowWeather";
             break;
         case "twoDays":
-            getTwoDaysWeather();
+            setTimeout(getTwoDaysWeather,1);
             updateAims = "updateTwoDaysWeather";
             break;
         case "aWeek":
-            getAWeekWeather();
+            setTimeout(getAWeekWeather,1);
             updateAims = "updateAWeekWeather";
             break;
     }
