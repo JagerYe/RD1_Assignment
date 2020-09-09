@@ -1,6 +1,6 @@
 # RD1_Assignment
 
-使用步驟：
+使用步驟：<br>
 （１）至MySQL中初始化DB，初始化檔案路徑：/RD1_Assignment/moreDate/createDatabase.sql<br>
 （２）瀏覽器開啟自動更新頁面，路徑：http://localhost/RD1_Assignment/autoUpdate.php<br>
 <br>
