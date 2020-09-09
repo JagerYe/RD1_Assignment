@@ -3,6 +3,7 @@
 使用步驟：<br>
 （１）至MySQL中初始化DB，初始化檔案路徑：/RD1_Assignment/moreDate/createDatabase.sql<br>
 （２）瀏覽器開啟自動更新頁面，路徑：http://localhost/RD1_Assignment/autoUpdate.php<br>
+（３）首頁：http://localhost/RD1_Assignment/views/pageFront/index_.html<br>
 <br>
 已完成功能：<br>
 （１）圖片依縣市顯示<br>
